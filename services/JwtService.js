@@ -1,0 +1,5 @@
+class JwtService {
+    static sign() {
+        
+    }
+}

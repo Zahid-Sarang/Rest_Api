@@ -1,8 +1,17 @@
-=> Register a User <=
-=> Login a User <=
-=> Who am I
-=> Add new product
-=> Update a product
-=> get all products
-=> get single product
-=> Delete a product
+* Register a User <= done
+
+* Login a User <= done
+
+* Who am I <= done
+
+* Refresh the token
+
+* Add new product
+
+* Update a product
+
+* get all products
+
+* get single product
+
+* Delete a product

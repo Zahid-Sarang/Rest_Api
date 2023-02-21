@@ -1,4 +1,4 @@
-=> Register a User
+=> Register a User <=
 => Login a User
 => Who am I
 => Add new product

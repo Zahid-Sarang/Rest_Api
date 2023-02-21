@@ -43,7 +43,6 @@ const registerController = {
     let access_token;
     try {
       const result = await user.save();
-      console.log(result);
 
       //======Token=======//
 

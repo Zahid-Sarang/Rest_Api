@@ -1,3 +1,11 @@
+// * validate the request
+// * authorise the request
+// * check if user is in the database already
+// * prepare model
+// * store in database
+// * generate jwt token
+// * send response
+// ===================================================================================================================================//
 import Joi from "joi";
 import CustomeErrorHandler from "../../services/CustomeErrorHandling";
 import { RefreshToken, User } from "../../models";
@@ -7,7 +15,7 @@ import { REFRESH_SECRET } from "../../config";
 
 const registerController = {
   async register(req, res, next) {
-    //===========Validation==============================//
+    // ====================== Request validation ====================== //
     const registerSchema = Joi.object({
       name: Joi.string().min(3).max(30).required(),
       email: Joi.string().email().required(),
@@ -18,10 +26,10 @@ const registerController = {
     });
     const { error } = registerSchema.validate(req.body);
     if (error) {
-      return next(error); // passing the error to errorHandler.js
+      return next(error);
     }
 
-    //==========check if user is in the database already=========//
+    // ====================== check if user is in the database already ====================== //
     try {
       const exist = await User.exists({ email: req.body.email });
       if (exist) {
@@ -30,23 +38,23 @@ const registerController = {
         );
       }
     } catch (error) {
-      return next(error); // passing the error
+      return next(error);
     }
 
-    //==Hash password==//
+    // ====================== Hash password ====================== //
     const { name, email, password } = req.body;
 
     const hasedPassword = await bcrypt.hash(password, 10);
 
-    //==prepare the model==//
+    // ====================== prepare the model ====================== //
 
     const user = new User({ name, email, password: hasedPassword });
     let access_token;
     let refresh_token;
     try {
-      const result = await user.save();
 
-      //======Token=======//
+      const result = await user.save();
+      // ====================== Token genrate ====================== //
 
       access_token = JwtService.sign({ _id: result._id, role: result.role });
       refresh_token = JwtService.sign(
@@ -55,22 +63,13 @@ const registerController = {
         REFRESH_SECRET
       );
 
-      // database whitelist
+      // ====================== database whitelist  ====================== //
       await RefreshToken.create({ token: refresh_token });
     } catch (error) {
       return next(error);
     }
-
     res.json({ access_token, refresh_token });
   },
 };
 
 export default registerController;
-
-// * validate the request
-// * authorise the request
-// * check if user is in the database already
-// * prepare model
-// * store in database
-// * generate jwt token
-// * send response

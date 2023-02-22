@@ -6,6 +6,8 @@ import Joi from "joi";
 import fs from "fs";
 import productSchema from "../../validators/productValidators";
 
+// ============================================ Multer Setup Start ====================================//
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => {
@@ -15,25 +17,26 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   },
 });
-
 const handleMultipartData = multer({
   storage,
   limits: { fileSize: 1000000 * 5 },
 }).single("image"); // 5mb
+// ============================= Multer Setup End ====================================//
+
+// ============================= Creating a Product Start ==================================//
 
 const productController = {
   async store(req, res, next) {
-    // Multipart form data
     handleMultipartData(req, res, async (err) => {
       if (err) {
         return next(CustomeErrorHandler.serverError(err.message));
       }
       const filePath = req.file.path;
-      // validation
+      //============== validation  ==============//
 
       const { error } = productSchema.validate(req.body);
       if (error) {
-        // Delete the uploaded file
+        //============== Delete the uploaded file ==============//
         fs.unlink(`${appRoot}/${filePath}`, (err) => {
           if (err) {
             return next(CustomeErrorHandler.serverError(err.message));
@@ -41,7 +44,7 @@ const productController = {
         });
 
         return next(error);
-        // rootfolder/uploads/filename.png
+       
       }
 
       const { name, price, size } = req.body;
@@ -59,8 +62,9 @@ const productController = {
       res.status(201).json(document);
     });
   },
+  // ================================== Creating a Product End ==================================//
 
-  //=================================== Update Product ==========================================//
+  //=================================== Update Product Start ==========================================//
   async update(req, res, next) {
     handleMultipartData(req, res, async (err) => {
       if (err) {
@@ -70,12 +74,12 @@ const productController = {
       if (req.file) {
         filePath = req.file.path;
       }
-      // validation
+      //============== validation ==============//
 
       const { error } = productSchema.validate(req.body);
       if (error) {
         if (req.file) {
-          // Delete the uploaded file
+          //============== Delete the uploaded file ==============//
           fs.unlink(`${appRoot}/${filePath}`, (err) => {
             if (err) {
               return next(CustomeErrorHandler.serverError(err.message));
@@ -84,7 +88,7 @@ const productController = {
         }
 
         return next(error);
-        // rootfolder/uploads/filename.png
+        
       }
 
       const { name, price, size } = req.body;
@@ -106,16 +110,16 @@ const productController = {
       res.status(201).json(document);
     });
   },
-
-  //=================================== Delete Product ==========================================//
+  //=================================== Update Product End ==========================================//
+  //==================================== Delete Product Start ==========================================//
 
   async destroy(req, res, next) {
     const document = await Product.findOneAndRemove({ _id: req.params.id });
     if (!document) {
       return next(new Error("Nothing to Delete"));
     }
-    // image delete
-    const imagePath = document._doc.image;   // _doc will return image without getter
+    //============== image delete ==============//
+    const imagePath = document._doc.image; // _doc will return image without getter
     console.log(imagePath);
     fs.unlink(`${appRoot}/${imagePath}`, (err) => {
       if (err) {
@@ -123,14 +127,14 @@ const productController = {
       }
       return res.status(201).json(document);
     });
-
   },
+  //==================================== Delete Product End ==========================================//
 
-  //=================================== Get All Products ==========================================//
+  //==================================== Get All Products Start ==========================================//
 
   async index(req, res, next) {
     let document;
-    // for the pagination you can use mongoose-pagination
+    // => (for the pagination you can use mongoose-pagination)
     try {
       document = await Product.find()
         .select("-updatedAt -__v")
@@ -140,7 +144,9 @@ const productController = {
     }
     return res.json(document);
   },
-  //=================================== Get Single Product ==========================================//
+  //==================================== Get All Products End ==========================================//
+
+  //=================================== Get Single Product Start ==========================================//
   async show(req, res, next) {
     let document;
     try {
@@ -153,5 +159,6 @@ const productController = {
     return res.json(document);
   },
 };
+//=================================== Get Single Product End ==========================================//
 
 export default productController;

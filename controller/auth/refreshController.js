@@ -6,7 +6,7 @@ import JwtService from "../../services/JwtService";
 
 const refreshController = {
   async refresh(req, res, next) {
-    //============Validations=========//
+   // ====================== Request validation ====================== //
     const refreshSchema = Joi.object({
       refresh_token: Joi.string().required(),
     });
@@ -15,7 +15,7 @@ const refreshController = {
       return next(error);
     }
 
-    // check token in data
+    // ====================== check token in database ====================== //
     let refreshtoken;
 
     try {
@@ -41,7 +41,7 @@ const refreshController = {
         return next(CustomeErrorHandler.unAuthorized("No user found!"));
       }
 
-      // tokens
+      // ====================== tokens ====================== //
       const access_token = JwtService.sign({
         _id: user._id,
         role: user.role,
@@ -52,7 +52,7 @@ const refreshController = {
         REFRESH_SECRET
       );
 
-      // database whitelist
+      // ====================== database whitelist ====================== //
       await RefreshToken.create({ token: refresh_token });
       res.json({ access_token, refresh_token });
     } catch (error) {

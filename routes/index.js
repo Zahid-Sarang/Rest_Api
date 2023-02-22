@@ -4,6 +4,7 @@ import auth from '../middlewares/auth.js'
 import admin from '../middlewares/admin.js'
 
 const router = express.Router();
+//===================================== User Routes =======================================================//
 
 router.post("/register", registerController.register); // register user routes
 router.post("/login", loginController.login); // login user routes
@@ -21,7 +22,6 @@ router.get("/products/:id", productController.show) // get single product routes
 
 
 
-//===================================== User Routes =======================================================//
 
  
 export default router;

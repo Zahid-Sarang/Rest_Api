@@ -126,20 +126,31 @@ const productController = {
   },
 
   //=================================== Get All Products ==========================================//
-   
-  async index(req,res,next){
-     let document;
-     // for the pagination you can use mongoose-pagination
-     try {
-      document = await Product.find().select('-updatedAt -__v').sort({_id:-1});
 
-     }catch(error){
-      return next(CustomeErrorHandler.serverError(error))
-     }
-     return res.json(document)
-  }
-
-
+  async index(req, res, next) {
+    let document;
+    // for the pagination you can use mongoose-pagination
+    try {
+      document = await Product.find()
+        .select("-updatedAt -__v")
+        .sort({ _id: -1 });
+    } catch (error) {
+      return next(CustomeErrorHandler.serverError(error));
+    }
+    return res.json(document);
+  },
+  //=================================== Get Single Product ==========================================//
+  async show(req, res, next) {
+    let document;
+    try {
+      document = await Product.findOne({ _id: req.params.id }).select(
+        "-updatedAt -__v"
+      );
+    } catch (error) {
+      return next(CustomeErrorHandler.serverError(error));
+    }
+    return res.json(document);
+  },
 };
 
 export default productController;

@@ -17,6 +17,8 @@ router.post("/products",[auth,admin], productController.store); // create produc
 router.put("/products/:id",[auth,admin], productController.update); // update product routes
 router.delete("/products/:id",[auth,admin], productController.destroy); // delete product routes
 router.get("/products/", productController.index) // get all product routes
+router.get("/products/:id", productController.show) // get single product routes
+
 
 
 //===================================== User Routes =======================================================//

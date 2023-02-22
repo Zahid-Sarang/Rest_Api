@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { REFRESH_SECRET } from "../../config";
-import {RefrshToken,User} from "../../models";
+import { User, RefreshToken } from "../../models";
 import CustomeErrorHandler from "../../services/CustomeErrorHandling";
 import JwtService from "../../services/JwtService";
 
@@ -19,8 +19,8 @@ const refreshController = {
     let refreshtoken;
 
     try {
-      refreshtoken = await RefrshToken.findOne({
-        toke: req.body.refresh_token,
+      refreshtoken = await RefreshToken.findOne({
+        token: req.body.refresh_token,
       });
       if (!refreshtoken) {
         return next(CustomeErrorHandler.unAuthorized("Invalid refresh token"));
@@ -53,7 +53,7 @@ const refreshController = {
       );
 
       // database whitelist
-      await RefrshToken.create({ token: refresh_token });
+      await RefreshToken.create({ token: refresh_token });
       res.json({ access_token, refresh_token });
     } catch (error) {
       return next(new Error("Someting went wrong" + error.message));

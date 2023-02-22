@@ -1,6 +1,6 @@
 import Joi from "joi";
 import CustomeErrorHandler from "../../services/CustomeErrorHandling";
-import { RefrshToken, User } from "../../models";
+import { RefreshToken, User } from "../../models";
 import bcrypt from "bcrypt";
 import JwtService from "../../services/JwtService";
 import { REFRESH_SECRET } from "../../config";
@@ -49,16 +49,19 @@ const registerController = {
       //======Token=======//
 
       access_token = JwtService.sign({ _id: result._id, role: result.role });
-      refresh_token = JwtService.sign({ _id: result._id, role: result.role },'1y',REFRESH_SECRET);
-      
-      // database whitelist
-      await RefrshToken.create({token:refresh_token})
+      refresh_token = JwtService.sign(
+        { _id: result._id, role: result.role },
+        "1y",
+        REFRESH_SECRET
+      );
 
+      // database whitelist
+      await RefreshToken.create({ token: refresh_token });
     } catch (error) {
       return next(error);
     }
 
-    res.json({ access_token, refresh_token});
+    res.json({ access_token, refresh_token });
   },
 };
 

@@ -4,7 +4,9 @@
 
 * Who am I <= done
 
-* Refresh the token
+* Refresh the token <= done
+
+* Logout a User <= done
 
 * Add new product
 

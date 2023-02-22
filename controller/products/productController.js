@@ -115,14 +115,15 @@ const productController = {
       return next(new Error("Nothing to Delete"));
     }
     // image delete
-    const imagePath = document.image;
+    const imagePath = document._doc.image;   // _doc will return image without getter
+    console.log(imagePath);
     fs.unlink(`${appRoot}/${imagePath}`, (err) => {
       if (err) {
         return next(CustomeErrorHandler.serverError(err.message));
       }
+      return res.status(201).json(document);
     });
 
-    res.status(201).json(document);
   },
 
   //=================================== Get All Products ==========================================//

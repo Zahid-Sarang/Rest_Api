@@ -10,10 +10,10 @@
 
 * Add new product <= done
 
-* Update a product <=
+* Update a product <= done
 
-* get all products <=
+* get all products <= done 
 
-* get single product
+* get single product <= done
 
-* Delete a product <=
+* Delete a product <= done
